@@ -21,23 +21,34 @@ import androidx.navigation.compose.rememberNavController
 fun Handson1Screen() {
     val navController = rememberNavController()
 
-    // TODO 1: Panggil NavHost(navController = navController, startDestination = "home") { ... }
-    // TODO 2: Di dalamnya, daftarkan composable("home") { HomeScreen(navController) }
-    // TODO 3: Daftarkan juga composable("detail") { DetailScreen(navController) }
-
-    Text(
-        "Belum diimplementasikan — lengkapi TODO 1-3 di atas",
-        modifier = Modifier.padding(16.dp)
-    )
+    // TODO 1: Panggil NavHost
+    NavHost(
+        navController = navController,
+        startDestination = "home"
+    ) {
+        // TODO 2: Daftarkan composable("home")
+        composable("home") { 
+            HomeScreen(navController = navController) 
+        }
+        
+        // TODO 3: Daftarkan juga composable("detail")
+        composable("detail") { 
+            DetailScreen(navController = navController) 
+        }
+    }
 }
 
 @Composable
 private fun HomeScreen(navController: NavHostController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Home Screen")
-        Button(onClick = {
-            // TODO 4: Navigasi ke "detail" dengan navController.navigate("detail")
-        }) {
+        Button(
+            modifier = Modifier.padding(top = 16.dp),
+            onClick = {
+                // TODO 4: Navigasi ke "detail"
+                navController.navigate("detail")
+            }
+        ) {
             Text("Buka Detail")
         }
     }
@@ -47,9 +58,13 @@ private fun HomeScreen(navController: NavHostController) {
 private fun DetailScreen(navController: NavHostController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Detail Screen")
-        Button(onClick = {
-            // TODO 5: Kembali ke layar sebelumnya dengan navController.popBackStack()
-        }) {
+        Button(
+            modifier = Modifier.padding(top = 16.dp),
+            onClick = {
+                // TODO 5: Kembali ke layar sebelumnya
+                navController.popBackStack()
+            }
+        ) {
             Text("< Kembali")
         }
     }

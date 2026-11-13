@@ -1,11 +1,14 @@
 package com.itera.pam.p5.latihan
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -30,30 +33,48 @@ private val daftarItem = listOf(
 fun Handson2Screen() {
     val navController = rememberNavController()
 
-    // TODO 1: NavHost(navController, startDestination = "home") { ... }
-    // TODO 2: composable("home") { HomeListScreen(navController) }
-    // TODO 3: composable(
-    //             route = "detail/{itemId}",
-    //             arguments = listOf(navArgument("itemId") { type = NavType.IntType })
-    //         ) { backStackEntry ->
-    //             val itemId = backStackEntry.arguments?.getInt("itemId") ?: -1
-    //             DetailItemScreen(navController, itemId)
-    //         }
-
-    Text(
-        "Belum diimplementasikan — lengkapi TODO 1-3 di atas",
-        modifier = Modifier.padding(16.dp)
-    )
+    // TODO 1 & 2 & 3: Menyusun NavHost dan mendaftarkan composable
+    NavHost(
+        navController = navController, 
+        startDestination = "home"
+    ) {
+        // Rute Home
+        composable("home") { 
+            HomeListScreen(navController = navController) 
+        }
+        
+        // Rute Detail dengan argumen itemId
+        composable(
+            route = "detail/{itemId}",
+            arguments = listOf(navArgument("itemId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            // Mengambil nilai itemId dari argument (default -1 jika gagal)
+            val itemId = backStackEntry.arguments?.getInt("itemId") ?: -1
+            DetailItemScreen(navController = navController, itemId = itemId)
+        }
+    }
 }
 
 @Composable
 private fun HomeListScreen(navController: NavHostController) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Daftar Item")
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp) // Jarak antar elemen 8.dp
+    ) {
+        Text(
+            text = "Daftar Item",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
         daftarItem.forEach { item ->
-            Button(onClick = {
-                // TODO 4: navController.navigate("detail/${item.id}")
-            }) {
+            Button(
+                onClick = {
+                    // TODO 4: Navigasi ke detail dengan membawa item.id
+                    navController.navigate("detail/${item.id}")
+                },
+                modifier = Modifier.fillMaxWidth() // Memanjangkan tombol
+            ) {
                 Text(item.nama)
             }
         }
@@ -63,11 +84,22 @@ private fun HomeListScreen(navController: NavHostController) {
 @Composable
 private fun DetailItemScreen(navController: NavHostController, itemId: Int) {
     val item = daftarItem.find { it.id == itemId }
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Detail Item")
+    
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "Detail Item",
+            fontWeight = FontWeight.Bold
+        )
         Text("ID: $itemId")
         Text("Nama: ${item?.nama ?: "(tidak ditemukan)"}")
-        Button(onClick = { navController.popBackStack() }) {
+        
+        Button(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
             Text("< Kembali")
         }
     }

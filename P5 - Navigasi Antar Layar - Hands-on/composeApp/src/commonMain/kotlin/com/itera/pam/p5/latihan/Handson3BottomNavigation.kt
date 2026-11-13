@@ -1,11 +1,14 @@
 package com.itera.pam.p5.latihan
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,14 +18,7 @@ import androidx.navigation.compose.rememberNavController
 
 // Hands-on 3: Bottom Navigation
 // Tugas: buat 3 tab (Home/Search/Profil) dengan NavigationBar yang terhubung
-// ke NavHost.
-//
-// CATATAN PENTING: kode navigasi tab DI BAWAH INI SUDAH BISA JALAN, tapi
-// PERILAKUNYA SALAH — coba jalankan, buka tab Home > Search > Home > Search
-// berkali-kali, lalu tekan tombol Back: kamu akan melihat back stack menumpuk
-// dan tidak balik ke tab awal. Ini karena `navigate(route)` di bawah TIDAK
-// menyertakan opsi popUpTo/launchSingleTop/restoreState. Lengkapi TODO untuk
-// memperbaikinya.
+// ke NavHost dan mengatasi masalah penumpukan back stack.
 
 private data class Tab(val route: String, val label: String)
 
@@ -46,21 +42,22 @@ fun Handson3Screen() {
                     NavigationBarItem(
                         selected = currentRoute == tab.route,
                         onClick = {
-                            // BUG SENGAJA: navigate tanpa opsi popUpTo/launchSingleTop/
-                            // restoreState menyebabkan back stack menumpuk setiap kali
-                            // pindah tab.
-                            //
-                            // TODO: ganti baris di bawah dengan:
-                            // navController.navigate(tab.route) {
-                            //     popUpTo(navController.graph.findStartDestination().id) {
-                            //         saveState = true
-                            //     }
-                            //     launchSingleTop = true
-                            //     restoreState = true
-                            // }
-                            navController.navigate(tab.route)
+                            // SOLUSI: Menggunakan opsi navigasi standar untuk Bottom Tabs
+                            navController.navigate(tab.route) {
+                                // 1. Mencegah penumpukan layar: saat pindah tab, hapus layar 
+                                // lain sampai ke Start Destination (biasanya "home")
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // 2. Mencegah layar yang sama dibuka berkali-kali 
+                                // saat tombol tab yang sama di-tap berulang kali
+                                launchSingleTop = true
+                                // 3. Mengembalikan state (misal: posisi scroll) saat 
+                                // tab yang sebelumnya pernah dibuka, dibuka kembali
+                                restoreState = true
+                            }
                         },
-                        icon = { },
+                        icon = { /* Kosong sesuai template */ },
                         label = { Text(tab.label) }
                     )
                 }
@@ -72,9 +69,15 @@ fun Handson3Screen() {
             startDestination = "home",
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable("home") { Text("Halaman Home") }
-            composable("search") { Text("Halaman Search") }
-            composable("profil") { Text("Halaman Profil") }
+            composable("home") { 
+                Text("Halaman Home", modifier = Modifier.padding(16.dp)) 
+            }
+            composable("search") { 
+                Text("Halaman Search", modifier = Modifier.padding(16.dp)) 
+            }
+            composable("profil") { 
+                Text("Halaman Profil", modifier = Modifier.padding(16.dp)) 
+            }
         }
     }
 }

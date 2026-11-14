@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.itera.pam.p7.db.AppDatabase
 
@@ -34,17 +35,30 @@ fun Handson1Screen(database: AppDatabase) {
     var jumlah by remember { mutableStateOf(0L) }
 
     LaunchedEffect(Unit) {
-        // TODO 1: baca nilai lama dengan
-        //         database.preferensiQueries.selectByKey(KEY_JUMLAH_DIBUKA)
-        //             .executeAsOneOrNull()?.prefValue?.toLongOrNull() ?: 0L
+        // TODO 1: baca nilai lama dari database
+        val nilaiLama = database.preferensiQueries
+            .selectByKey(KEY_JUMLAH_DIBUKA)
+            .executeAsOneOrNull()?.prefValue?.toLongOrNull() ?: 0L
+            
         // TODO 2: hitung nilai baru = nilai lama + 1
-        // TODO 3: simpan nilai baru dengan
-        //         database.preferensiQueries.upsert(KEY_JUMLAH_DIBUKA, nilaiBaru.toString())
-        // TODO 4: update state `jumlah` dengan nilai baru tsb
+        val nilaiBaru = nilaiLama + 1
+        
+        // TODO 3: simpan nilai baru ke database dengan upsert (update/insert)
+        database.preferensiQueries.upsert(
+            prefKey = KEY_JUMLAH_DIBUKA,
+            prefValue = nilaiBaru.toString()
+        )
+        
+        // TODO 4: update state `jumlah` dengan nilai baru tsb agar UI berubah
+        jumlah = nilaiBaru
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Hands-on 1: Preferensi Sederhana")
+        Text(
+            text = "Hands-on 1: Preferensi Sederhana",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
         Text("Aplikasi ini sudah dibuka: $jumlah kali")
     }
 }

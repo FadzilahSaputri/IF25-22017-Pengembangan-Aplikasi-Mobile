@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,18 +39,30 @@ class UserListStateHolder(
 
     suspend fun load() {
         // TODO 1: set _state.value ke UiState.Loading sebelum mulai fetch
-        // TODO 2: panggil repository.getUsers() di dalam try-catch
-        // TODO 3: jika berhasil, set _state.value ke UiState.Success(users)
-        // TODO 4: jika gagal (catch Exception e), set _state.value ke
-        //         UiState.Error(e.message ?: "Terjadi kesalahan")
-        TODO("Lengkapi load(): Loading -> try fetch -> Success/Error")
+        _state.value = UiState.Loading
+        
+        try {
+            // TODO 2: panggil repository.getUsers() di dalam try-catch
+            val users = repository.getUsers()
+            
+            // TODO 3: jika berhasil, set _state.value ke UiState.Success(users)
+            _state.value = UiState.Success(users)
+        } catch (e: Exception) {
+            // TODO 4: jika gagal (catch Exception e), set _state.value ke UiState.Error
+            // Kita gunakan elvis operator (?:) untuk memberi pesan default jika e.message kosong
+            _state.value = UiState.Error(e.message ?: "Terjadi kesalahan pada jaringan")
+        }
     }
 }
 
 @Composable
 fun Handson2Screen() {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Hands-on 2: Repository Pattern & Loading State")
-        Text("Lengkapi TODO di UserListStateHolder.load(), lalu lihat Solusi 2 untuk contoh penggunaannya di Compose.")
+        Text(
+            text = "Hands-on 2: Repository Pattern & Loading State",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text("State Holder dan Repository sudah diimplementasikan dengan blok try-catch untuk menangani kondisi Loading, Success, dan Error.")
     }
 }

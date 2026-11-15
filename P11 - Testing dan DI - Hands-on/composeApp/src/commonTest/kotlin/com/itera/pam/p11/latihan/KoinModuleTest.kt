@@ -10,19 +10,23 @@ import org.koin.test.inject
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 // Hands-on 3: Koin DI Module
 // Tugas: pastikan `appModule` (package `di`) benar-benar bisa di-resolve oleh
 // Koin container, dan setiap dependency ter-hubung dengan benar.
 class KoinModuleTest : KoinTest {
 
-    // TODO 1: deklarasikan 2 property berikut:
-    // private val counter: Counter by inject()
-    // private val sessionLogger: SessionLogger by inject()
+    // TODO 1: deklarasikan 2 property dengan delegasi by inject()
+    private val counter: Counter by inject()
+    private val sessionLogger: SessionLogger by inject()
 
     @BeforeTest
     fun setup() {
-        // TODO 2: startKoin { modules(appModule) }
+        // TODO 2: inisialisasi Koin dengan appModule sebelum test berjalan
+        startKoin {
+            modules(appModule)
+        }
     }
 
     @AfterTest
@@ -32,7 +36,8 @@ class KoinModuleTest : KoinTest {
 
     @Test
     fun semuaDependencyDiAppModuleBerhasilDiResolve() {
-        // TODO 3: assertNotNull(counter) dan assertNotNull(sessionLogger)
-        TODO("Lengkapi test resolusi Koin module")
+        // TODO 3: pastikan kedua instance berhasil di-inject (tidak null)
+        assertNotNull(counter)
+        assertNotNull(sessionLogger)
     }
 }
